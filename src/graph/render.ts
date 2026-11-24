@@ -27,6 +27,8 @@ export interface GraphNode {
   /** Pop-in animation, with an optional delay in ms. */
   pop?: boolean;
   delay?: number;
+  /** Text to type into the command line when the station is clicked; omit for drawings you cannot click. */
+  pick?: string;
 }
 
 export interface GraphEdge {
@@ -46,6 +48,8 @@ export interface Pill {
   text: string;
   kind: PillKind;
   line: number;
+  /** Text to type into the command line when the label is clicked (e.g. "main" for "HEAD → main"). */
+  pick?: string;
 }
 
 export interface GraphModel {
@@ -77,6 +81,12 @@ function pillShape(p: Pill, x: number, y: number, w: number): string {
   const r = x + w / 2;
   const text = (fill: string, dx = 0) =>
     `<text x="${x + dx}" y="${y + 4.5}" text-anchor="middle" font-size="13" font-weight="700" style="fill:${fill}">${esc(p.text)}</text>`;
+  // Ring shown on hover and keyboard focus when the label can be clicked (see .pick in styles.css).
+  const halo = p.pick ? `<rect class="halo" x="${l - 4}" y="${y - 16}" width="${w + 8}" height="32" rx="${p.kind === 'tag' ? 8 : 16}"/>` : '';
+  return halo + pillBody(p, y, w, l, r, text);
+}
+
+function pillBody(p: Pill, y: number, w: number, l: number, r: number, text: (fill: string, dx?: number) => string): string {
   switch (p.kind) {
     case 'remote':
       return `<rect x="${l + 1}" y="${y - 11}" width="${w - 2}" height="22" rx="11" stroke-width="2" stroke-dasharray="5 3" style="fill:var(--sheet);stroke:${stroke(p.line)}"/>${text('var(--ink)')}`;
@@ -87,6 +97,22 @@ function pillShape(p: Pill, x: number, y: number, w: number): string {
     default:
       return `<rect x="${l}" y="${y - 12}" width="${w}" height="24" rx="12" style="fill:${stroke(p.line)}"/>${text(onLine(p.line))}`;
   }
+}
+
+// ---- clicking commits and labels ---------------------------------------------------------
+// Stations and labels that carry a `pick` are buttons: clicking one (or Enter on it) types its name
+// into the command line (graph/pick.ts). One of them is in the Tab order at a time, starting at
+// HEAD; the arrow keys move between them.
+
+function classes(pick: string | undefined, pop: boolean | undefined): string {
+  const list = [pick ? 'pick' : '', pop ? 'pop' : ''].filter(Boolean);
+  return list.length ? ` class="${list.join(' ')}"` : '';
+}
+
+function pickAttrs(pick: string | undefined, tabStop: boolean, title?: string): string {
+  if (!pick) return '';
+  const what = title && title !== pick ? `${title}. ` : '';
+  return ` data-pick="${esc(pick)}" role="button" tabindex="${tabStop ? 0 : -1}" aria-label="${esc(`${what}Insert ${pick} into the command`)}"`;
 }
 
 // ---- motion ------------------------------------------------------------------------
@@ -164,12 +190,13 @@ export function renderGraph(svg: SVGSVGElement, m: GraphModel, o: RenderOptions 
 
   const nodes = m.nodes
     .map((n) => {
-      const anim = n.pop ? ` class="pop" style="animation-delay:${ms(popAt(n))}"` : '';
+      const anim = n.pop ? ` style="animation-delay:${ms(popAt(n))}"` : '';
       const title = n.title ? `<title>${esc(n.title)}</title>` : '';
       const label = n.label ? `<text class="m" x="${n.x}" y="${n.y + R + 20}" text-anchor="middle" font-size="13">${esc(n.label)}</text>` : '';
       const fill = n.head ? stroke(n.line) : 'var(--sheet)';
       const ink = n.head ? onLine(n.line) : 'var(--ink)';
-      return `<g data-n="${esc(n.id)}" opacity="${n.faded ? 0.3 : 1}"${anim}>${title}<circle cx="${n.x}" cy="${n.y}" r="${R}" stroke-width="5" style="fill:${fill};stroke:${stroke(n.line)}"/><text x="${n.x}" y="${n.y + 4.5}" text-anchor="middle" font-size="13" font-weight="800" style="fill:${ink}">${esc(n.id)}</text>${label}</g>`;
+      const halo = n.pick ? `<circle class="halo" cx="${n.x}" cy="${n.y}" r="${R + 7}"/>` : '';
+      return `<g data-n="${esc(n.id)}"${classes(n.pick, n.pop)}${pickAttrs(n.pick, n.head, n.title)} opacity="${n.faded ? 0.3 : 1}"${anim}>${title}${halo}<circle class="st" cx="${n.x}" cy="${n.y}" r="${R}" stroke-width="5" style="fill:${fill};stroke:${stroke(n.line)}"/><text x="${n.x}" y="${n.y + 4.5}" text-anchor="middle" font-size="13" font-weight="800" style="fill:${ink}">${esc(n.id)}</text>${label}</g>`;
     })
     .join('');
 
@@ -198,8 +225,8 @@ export function renderGraph(svg: SVGSVGElement, m: GraphModel, o: RenderOptions 
         // When animating a change, only labels that did not exist before pop in (existing ones slide);
         // on a fresh draw, labels appear with their station.
         const appears = motion ? !prev?.pills.has(p.key) : at.pop;
-        const anim = appears ? ` class="pop" style="animation-delay:${ms(at.pop ? popAt(at) + LABEL_AFTER : 0)}"` : '';
-        return `<g data-p="${esc(p.key)}"${anim}>${pillShape(p, x, y, w)}</g>`;
+        const anim = appears ? ` style="animation-delay:${ms(at.pop ? popAt(at) + LABEL_AFTER : 0)}"` : '';
+        return `<g data-p="${esc(p.key)}"${classes(p.pick, appears)}${pickAttrs(p.pick, false)}${anim}>${pillShape(p, x, y, w)}</g>`;
       });
       leaderTop.set(at.id, top);
       // One style attribute only: a second one is ignored by the browser, which used to drop this
@@ -241,7 +268,7 @@ export function renderGraph(svg: SVGSVGElement, m: GraphModel, o: RenderOptions 
     if (!n || !before) continue;
     slide(el, before.x - n.x - sx, before.y - n.y - sy);
     if (before.faded !== n.faded) fadeBetween(el, before.faded ? 0.3 : 1, n.faded ? 0.3 : 1);
-    const circle = el.querySelector('circle');
+    const circle = el.querySelector('circle.st');
     if (n.head && !before.head && circle) {
       circle.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.22)' }, { transform: 'scale(1)' }], { duration: 420, easing: 'ease-out' });
     }

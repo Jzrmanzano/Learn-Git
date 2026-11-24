@@ -2,6 +2,7 @@
 import { drawRepo, type DrawOptions } from './graph/live';
 import { LEVELS } from './levels';
 import { hashFor, nextLevel, readProgress } from './progress';
+import { enableCompletion, enablePicking, formatOptions } from './prompt';
 import { Repo, type Line } from './sim';
 import { initTheme } from './theme';
 
@@ -40,6 +41,13 @@ if (graph && svg && form && input && prompt && out && tryRow) {
   repo.load(DEMO_SETUP);
   const seen = new Set<string>();
   let drawnSize = '';
+
+  // Click a commit or label to type its name; Tab completes, listing the matches when there are several.
+  enablePicking(svg, input);
+  enableCompletion(input, repo, (options) => {
+    out.replaceChildren(document.createTextNode(formatOptions(options)));
+    out.classList.remove('err');
+  });
 
   // The page's one orchestrated moment: on first draw the demo's history builds up along its lines.
   // After that, commands animate what changed, and resizes just refit.

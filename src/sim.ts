@@ -204,6 +204,13 @@ export class Repo {
     ...Object.fromEntries(Object.entries(NO_FILES).map(([name, text]) => [name, () => this.note(text)])),
   };
 
+  /** The git commands worth suggesting: everything simulated, minus the ones that only explain they need files. */
+  get subcommands(): string[] {
+    return Object.keys(this.commands)
+      .filter((k) => !Object.hasOwn(NO_FILES, k) && k !== 'init' && k !== 'clone')
+      .sort();
+  }
+
   /** Start from one commit on main, run setup commands silently, and clear undo history. */
   load(setup: readonly string[]): void {
     this.state = freshState();

@@ -21,10 +21,10 @@
   </div>
   <div class="wrap">
     <section class="demo" aria-label="Try it: a live repository">
-      <div class="dgraph" id="dg"><svg id="dsvg" role="img" aria-label="Commit graph of the demo repository. It changes as you type commands."></svg></div>
+      <div class="dgraph" id="dg"><svg id="dsvg" role="group" aria-label="Commit graph of the demo repository. It changes as you type commands. Click a commit or label to type its name."></svg></div>
       <div class="dterm">
         <form class="din" id="df"><label for="dcmd" id="dpr">(main) $</label><input id="dcmd" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="git commit" enterkeyhint="go"><button type="submit" class="run">Run</button></form>
-        <p class="dout" id="dout" aria-live="polite">This repository is live. Type a command, or pick one below.</p>
+        <p class="dout" id="dout" aria-live="polite">This repository is live. Type a command, pick one below, or click a commit to type its ID.</p>
         <div class="try" id="try" aria-label="Commands to try"><button type="button">git commit</button><button type="button">git switch dark-mode</button><button type="button">git merge dark-mode</button><button type="button">git rebase main</button><button type="button">git push</button><button type="button" class="undo">undo</button></div>
       </div>
     </section>

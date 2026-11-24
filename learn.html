@@ -13,7 +13,7 @@
 <nav class="route" aria-label="Levels"><ol class="stops" id="lv"></ol><p class="prog"><b id="pc">0</b> of <span id="pt">16</span> levels done</p></nav>
 <main class="trainer">
 <section class="board" aria-label="Commit graph">
-  <div class="gw" id="gw"><svg id="g" role="img" aria-label="Commit graph"></svg></div>
+  <div class="gw" id="gw"><svg id="g" role="group" aria-label="Commit graph"></svg></div>
   <p class="origin" id="origin" hidden></p>
   <ul class="keyline" aria-label="Key">
     <li><svg class="sym" width="24" height="24" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="9" stroke-width="4" style="fill:var(--sheet);stroke:var(--l0)"/></svg>Commit</li>
@@ -22,6 +22,7 @@
     <li><span class="pill remote">origin/main</span>Last known position on origin</li>
     <li><span class="pill tag">v1.0</span>Tag</li>
     <li><svg class="sym" width="24" height="24" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="9" stroke-width="4" opacity=".32" style="fill:var(--sheet);stroke:var(--l0)"/></svg>Not on any branch</li>
+    <li class="tip">Click any commit or label to type it into the command</li>
   </ul>
 </section>
 <div class="side">
@@ -66,6 +67,7 @@
       <li><code>teammate</code><span>a teammate pushes to origin</span></li>
       <li><code>undo</code><span>take back the last command</span></li>
       <li><code>clear</code>, <code>help</code><span>tidy up, list commands</span></li>
+      <li><kbd>Tab</kbd><span>complete a command, flag or name</span></li>
       <li><kbd>↑</kbd> <kbd>↓</kbd><span>recall earlier commands</span></li>
     </ul></div>
   </div>

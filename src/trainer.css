@@ -118,3 +118,5 @@ kbd{display:inline-block;font:600 13px/1.4 var(--mono);border:1px solid var(--ru
   .story{margin-bottom:12px;line-height:1.5}
   .goal{margin-bottom:12px;padding:10px 14px}
 }
+#out .opts{color:var(--term-dim);margin:4px 0 6px}
+.keyline .tip{color:var(--ink)}

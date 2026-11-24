@@ -1,5 +1,6 @@
 // Solves every level with its intended commands and runs error and behaviour checks.
 // Run with: npm test
+import { complete } from '../src/complete';
 import { GOAL_COUNT, LEVELS } from '../src/levels';
 import { Repo } from '../src/sim';
 
@@ -141,6 +142,27 @@ r.exec('git switch search');
 expect(r.currentBranch === 'search' && r.state.upstream.search === 'origin/search', 'switching to a remote-only branch creates a tracking branch');
 r.exec('git push origin --delete search');
 expect(!r.state.remote?.branches.search && !r.state.tracking['origin/search'], 'push --delete removes the remote branch');
+
+// Tab completion
+r = play(16, ['git tag v1.0 C1']); // main, search (current), origin/main, tag v1.0, commits C0–C2
+const tab = (line: string) => complete(line, line.length, r);
+const completesTo = (line: string, want: string) => expect(tab(line)?.value === want, `Tab: "${line}" completes to "${want}" (got "${tab(line)?.value}")`);
+completesTo('gi', 'git ');
+completesTo('git sw', 'git switch ');
+completesTo('git switch ma', 'git switch main ');
+completesTo('git cherry-pick c1', 'git cherry-pick C1 ');
+completesTo('git push ', 'git push origin ');
+completesTo('git push origin se', 'git push origin search ');
+completesTo('git reset --h', 'git reset --hard ');
+completesTo('git checkout v', 'git checkout v1.0 ');
+completesTo('git merge origin', 'git merge origin/main ');
+completesTo('teammate m', 'teammate main ');
+const many = tab('git s');
+expect(!!many && many.value === 'git s' && ['show', 'status', 'switch'].every((o) => many.options.includes(o)), 'Tab: an ambiguous word lists its matches');
+expect(tab('git commit -m "Add ') === null, 'Tab: nothing is completed inside a quoted message');
+expect(tab('git switch -c ')?.options.length === 0, 'Tab: no suggestions for a new branch name');
+const mid = complete('git merge ma --no-ff', 'git merge ma'.length, r);
+expect(mid?.value === 'git merge main --no-ff' && mid.caret === 'git merge main '.length, 'Tab: completes in the middle of a line');
 
 if (failures.length) throw new Error(`${failures.length} check(s) failed`);
 console.log('\nAll checks passed.');

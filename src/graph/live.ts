@@ -65,18 +65,18 @@ export function drawRepo(wrap: HTMLElement, svg: SVGSVGElement, repo: Repo, seen
   // A detached HEAD gets its own label, closest of all.
   const byCommit = new Map<string, Pill[]>();
   const add = (id: string, pill: Pill) => byCommit.set(id, [...(byCommit.get(id) ?? []), pill]);
-  if (!current) add(head, { key: 'h', text: 'HEAD', kind: 'head', line: 0 });
+  if (!current) add(head, { key: 'h', text: 'HEAD', kind: 'head', line: 0, pick: 'HEAD' });
   const names = Object.keys(branches).sort((a, b) => Number(b === current) - Number(a === current) || a.localeCompare(b));
   for (const name of names) {
     const id = branches[name];
-    add(id, { key: `b:${name}`, text: name === current ? `HEAD → ${name}` : name, kind: 'branch', line: lanes[name] ?? commits[id].lane });
+    add(id, { key: `b:${name}`, text: name === current ? `HEAD → ${name}` : name, kind: 'branch', line: lanes[name] ?? commits[id].lane, pick: name });
   }
   for (const ref of Object.keys(tracking).sort()) {
     const id = tracking[ref];
     const local = ref.slice(ref.indexOf('/') + 1);
-    add(id, { key: `r:${ref}`, text: ref, kind: 'remote', line: lanes[local] ?? lanes[ref] ?? commits[id].lane });
+    add(id, { key: `r:${ref}`, text: ref, kind: 'remote', line: lanes[local] ?? lanes[ref] ?? commits[id].lane, pick: ref });
   }
-  for (const name of Object.keys(tags).sort()) add(tags[name], { key: `t:${name}`, text: name, kind: 'tag', line: 0 });
+  for (const name of Object.keys(tags).sort()) add(tags[name], { key: `t:${name}`, text: name, kind: 'tag', line: 0, pick: name });
 
   const usedLanes = [...new Set(all.map((c) => c.lane))].sort((a, b) => a - b);
   const row = new Map(usedLanes.map((lane, i) => [lane, i]));
@@ -102,6 +102,7 @@ export function drawRepo(wrap: HTMLElement, svg: SVGSVGElement, repo: Repo, seen
       head: c.id === head,
       label: shorten(c.msg),
       title: `${c.id}: ${c.msg}`,
+      pick: c.id,
       pop,
       delay: pop && o.stagger ? 120 + fresh++ * o.stagger : 0,
     });

@@ -120,3 +120,11 @@ footer.site a:not(.brand){color:var(--mute)}
 /* Scrollbars in scrolling areas take the theme's colours instead of the system's */
 .gw,.dgraph,.stops,.jump,.scroll{scrollbar-color:color-mix(in srgb,var(--mute) 55%,transparent) transparent}
 #out{scrollbar-color:var(--term-rule) transparent}
+
+/* Commits and labels in a live graph are buttons that type their name into the command line.
+   A ring shows on hover and, stronger, on keyboard focus. */
+.pick{cursor:pointer;outline:none}
+.pick .halo{fill:none;stroke:var(--focus);stroke-width:3;opacity:0;transition:opacity .15s}
+.pick:hover .halo{opacity:.45}
+.pick:focus-visible .halo{opacity:1}
+@media(prefers-reduced-motion:reduce){.pick .halo{transition:none}}

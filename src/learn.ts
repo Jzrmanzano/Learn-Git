@@ -3,6 +3,7 @@ import { drawRepo, type DrawOptions } from './graph/live';
 import { esc } from './graph/render';
 import { GOAL_COUNT, GROUPS, LEVELS, SANDBOX_INDEX } from './levels';
 import { hashFor, nextLevel, readProgress, saveProgress } from './progress';
+import { enableCompletion, enablePicking, formatOptions } from './prompt';
 import { Repo, type Line } from './sim';
 import { initTheme } from './theme';
 
@@ -28,6 +29,16 @@ const sideBySide = matchMedia('(min-width: 981px)');
 const showTerminal = () => term.scrollIntoView({ block: 'nearest' });
 
 const repo = new Repo();
+
+// Click a commit or label to type its name; Tab completes. Several matches are listed in the terminal.
+enablePicking(svg, input);
+enableCompletion(input, repo, (options) => {
+  const div = document.createElement('div');
+  div.className = 'opts';
+  div.textContent = formatOptions(options);
+  out.appendChild(div);
+  out.scrollTop = out.scrollHeight;
+});
 let level = 0;
 let solved = false;
 let showHint = false;
@@ -140,7 +151,7 @@ function load(i: number): void {
   showHint = false;
   seen = new Set();
   out.innerHTML = '';
-  print([{ text: 'Type help to list commands. Up arrow recalls earlier ones.', kind: 'note' }]);
+  print([{ text: 'Type help to list commands. Tab completes, the up arrow recalls earlier commands, and clicking a commit types its ID.', kind: 'note' }]);
   saveProgress(done, level);
   // The level's starting history builds up commit by commit.
   refresh({ stagger: 55 });
