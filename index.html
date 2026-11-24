@@ -4,10 +4,12 @@
 <meta name="description" content="A free, in-browser Git trainer. Type real Git commands and watch a live commit graph redraw. Sixteen guided levels, from first commits to push and pull, plus a sandbox.">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <script>try{var t=localStorage.getItem('learngit.theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+<style>:root{color-scheme:light dark;background:light-dark(#eef1f5,#0f1a2e);color:light-dark(#14223b,#eaf0f8)}:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}</style>
+<link rel="stylesheet" href="/src/styles.css"><link rel="stylesheet" href="/src/home.css">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Overpass+Mono:wght@400;600&family=Overpass:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 </head><body>
-<nav class="nav" aria-label="Site"><a class="brand" href="index.html"><img src="/favicon.svg" alt="">LearnGit</a><a class="l" href="#levels">Levels</a><a class="l" href="cheatsheet.html">Cheat sheet</a><button class="theme" type="button" data-theme-toggle aria-pressed="false" aria-label="Dark theme"><svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.6A8.6 8.6 0 0 1 9.4 3.5a8.6 8.6 0 1 0 11.1 11.1Z" fill="currentColor"/></svg><svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.6" fill="currentColor"/><path d="M12 1.8v2.6M12 19.6v2.6M1.8 12h2.6M19.6 12h2.6M4.8 4.8l1.8 1.8M17.4 17.4l1.8 1.8M4.8 19.2l1.8-1.8M17.4 6.6l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button><a class="btn" href="learn.html#level-1" data-continue="nav">Start learning</a></nav>
+<nav class="nav" aria-label="Site"><a class="brand" href="index.html"><img src="/favicon.svg" alt="" width="32" height="32">LearnGit</a><a class="l" href="#levels">Levels</a><a class="l" href="cheatsheet.html">Cheat sheet</a><button class="theme" type="button" data-theme-toggle aria-pressed="false" aria-label="Dark theme"><svg class="moon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.6A8.6 8.6 0 0 1 9.4 3.5a8.6 8.6 0 1 0 11.1 11.1Z" fill="currentColor"/></svg><svg class="sun" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.6" fill="currentColor"/><path d="M12 1.8v2.6M12 19.6v2.6M1.8 12h2.6M19.6 12h2.6M4.8 4.8l1.8 1.8M17.4 17.4l1.8 1.8M4.8 19.2l1.8-1.8M17.4 6.6l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button><a class="btn" href="learn.html#level-1" data-continue="nav">Start learning</a></nav>
 <main>
 <header class="hero">
   <div class="wrap top">
@@ -32,13 +34,13 @@
 <section class="band" aria-labelledby="key-h"><div class="wrap keysec">
   <div class="keyintro"><h2 id="key-h">Read the graph like a transit map</h2><p class="lead">Every level uses the same seven marks. Learn them once and the rest of Git is labels moving along lines.</p></div>
   <dl class="key">
-    <div><dt><svg class="sym" viewBox="0 0 52 28" aria-hidden="true"><circle cx="16" cy="14" r="10" stroke-width="4" style="fill:var(--sheet);stroke:var(--l0)"/></svg>Commit</dt><dd>A saved snapshot. Each one points back to the commit before it.</dd></div>
-    <div><dt><svg class="sym" viewBox="0 0 52 28" aria-hidden="true"><path d="M8 14H44" stroke-width="5" stroke-linecap="round" style="stroke:var(--l1)"/><circle cx="8" cy="14" r="6.5" stroke-width="3.5" style="fill:var(--sheet);stroke:var(--l1)"/><circle cx="44" cy="14" r="6.5" stroke-width="3.5" style="fill:var(--sheet);stroke:var(--l1)"/></svg>Line</dt><dd>Commits made on the same branch share a colour.</dd></div>
-    <div><dt><svg class="sym" viewBox="0 0 52 28" aria-hidden="true"><circle cx="16" cy="14" r="10" stroke-width="4" style="fill:var(--l0);stroke:var(--l0)"/></svg>HEAD</dt><dd>The filled station is where you are. Your next commit attaches here.</dd></div>
+    <div><dt><svg class="sym" width="52" height="28" viewBox="0 0 52 28" aria-hidden="true"><circle cx="16" cy="14" r="10" stroke-width="4" style="fill:var(--sheet);stroke:var(--l0)"/></svg>Commit</dt><dd>A saved snapshot. Each one points back to the commit before it.</dd></div>
+    <div><dt><svg class="sym" width="52" height="28" viewBox="0 0 52 28" aria-hidden="true"><path d="M8 14H44" stroke-width="5" stroke-linecap="round" style="stroke:var(--l1)"/><circle cx="8" cy="14" r="6.5" stroke-width="3.5" style="fill:var(--sheet);stroke:var(--l1)"/><circle cx="44" cy="14" r="6.5" stroke-width="3.5" style="fill:var(--sheet);stroke:var(--l1)"/></svg>Line</dt><dd>Commits made on the same branch share a colour.</dd></div>
+    <div><dt><svg class="sym" width="52" height="28" viewBox="0 0 52 28" aria-hidden="true"><circle cx="16" cy="14" r="10" stroke-width="4" style="fill:var(--l0);stroke:var(--l0)"/></svg>HEAD</dt><dd>The filled station is where you are. Your next commit attaches here.</dd></div>
     <div><dt><span class="pill">main</span>Branch</dt><dd>A movable label. It slides forward each time you commit.</dd></div>
     <div><dt><span class="pill remote">origin/main</span>Remote-tracking branch</dt><dd>Where origin's main was the last time you fetched or pushed.</dd></div>
     <div><dt><span class="pill tag">v1.0</span>Tag</dt><dd>A fixed label, usually for a release. It never moves.</dd></div>
-    <div><dt><svg class="sym" viewBox="0 0 52 28" aria-hidden="true"><g opacity=".32"><path d="M2 14H24" stroke-width="5" stroke-linecap="round" stroke-dasharray="1 9" style="stroke:var(--l0)"/><circle cx="34" cy="14" r="10" stroke-width="4" style="fill:var(--sheet);stroke:var(--l0)"/></g></svg>Faded station</dt><dd>No longer on any branch. The reflog can still find it.</dd></div>
+    <div><dt><svg class="sym" width="52" height="28" viewBox="0 0 52 28" aria-hidden="true"><g opacity=".32"><path d="M2 14H24" stroke-width="5" stroke-linecap="round" stroke-dasharray="1 9" style="stroke:var(--l0)"/><circle cx="34" cy="14" r="10" stroke-width="4" style="fill:var(--sheet);stroke:var(--l0)"/></g></svg>Faded station</dt><dd>No longer on any branch. The reflog can still find it.</dd></div>
   </dl>
 </div></section>
 
@@ -83,6 +85,6 @@
 
 <section class="band finale"><div class="wrap"><div><h2>Make your first commit</h2><p>Level 1 needs just two commands.</p></div><a class="btn" href="learn.html#level-1">Start level 1</a></div></section>
 </main>
-<footer class="site"><div class="wrap"><a class="brand" href="index.html"><img src="/favicon.svg" alt="">LearnGit</a><a href="learn.html">Trainer</a><a href="cheatsheet.html">Cheat sheet</a><span>Free to use. No account needed.</span></div></footer>
+<footer class="site"><div class="wrap"><a class="brand" href="index.html"><img src="/favicon.svg" alt="" width="26" height="26">LearnGit</a><a href="learn.html">Trainer</a><a href="cheatsheet.html">Cheat sheet</a><span>Free to use. No account needed.</span></div></footer>
 <script type="module" src="/src/home.ts"></script>
 </body></html>

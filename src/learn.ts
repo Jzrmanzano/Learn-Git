@@ -1,6 +1,4 @@
 // Trainer page: route of levels, lesson, terminal and live commit graph.
-import './styles.css';
-import './trainer.css';
 import { drawRepo, type DrawOptions } from './graph/live';
 import { esc } from './graph/render';
 import { GOAL_COUNT, GROUPS, LEVELS, SANDBOX_INDEX } from './levels';
@@ -23,6 +21,11 @@ const input = el<HTMLInputElement>('#cmd');
 const lesson = el<HTMLElement>('#lesson');
 const levelNav = el<HTMLOListElement>('#lv');
 const origin = el<HTMLElement>('#origin');
+const term = el<HTMLElement>('.term');
+const sideBySide = matchMedia('(min-width: 981px)');
+
+/** Scrolls the least needed so the whole terminal, prompt included, is on screen. */
+const showTerminal = () => term.scrollIntoView({ block: 'nearest' });
 
 const repo = new Repo();
 let level = 0;
@@ -143,6 +146,9 @@ function load(i: number): void {
   refresh({ stagger: 55 });
   window.history.replaceState(null, '', hashFor(level));
   levelNav.querySelector(`[data-i="${level}"]`)?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  // Beside the graph, a long lesson can push the prompt below a short screen. (On phones the
+  // terminal comes after the lesson, so leave the page where the student is reading.)
+  if (sideBySide.matches) showTerminal();
 }
 
 function checkGoal(): void {
@@ -185,6 +191,8 @@ el<HTMLFormElement>('#f').addEventListener('submit', (ev) => {
   commandHistory.push(value);
   historyPos = commandHistory.length;
   run(value);
+  // The terminal grows with its output; keep all of it, prompt included, on screen.
+  showTerminal();
 });
 
 input.addEventListener('keydown', (ev) => {
@@ -248,3 +256,9 @@ const saved = readProgress();
 done = saved.done;
 buildLevels();
 load(levelFromHash() ?? saved.level ?? nextLevel(done));
+// Ready to type straight away with a keyboard; on touch screens this would pop up the keyboard, so skip it.
+if (matchMedia('(pointer: fine)').matches) input.focus({ preventScroll: true });
+// The web font changes text heights once it arrives, so check the terminal is still in view.
+void document.fonts.ready.then(() => {
+  if (sideBySide.matches) showTerminal();
+});

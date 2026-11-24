@@ -92,8 +92,10 @@ function pillShape(p: Pill, x: number, y: number, w: number): string {
 // ---- motion ------------------------------------------------------------------------
 // Each svg remembers where things were at its last draw. With `motion`, the next draw animates
 // from there: labels slide to their new commit, the whole map glides when it recentres, commits
-// that drop off every branch fade, and HEAD pulses where it lands. New lines draw in (CSS .draw)
-// and their station pops in just after (CSS .pop).
+// that drop off every branch fade, and HEAD pulses where it lands.
+// New commits build like a map drawing itself: each new line grows out of its parent station once
+// that station is showing, and reaches its own station exactly as the station pops in (CSS .draw,
+// .pop). Lines never start from an empty spot, so there are no floating fragments.
 
 interface Point {
   x: number;
@@ -110,8 +112,12 @@ interface Snapshot {
 const memory = new WeakMap<SVGSVGElement, Snapshot>();
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 const SLIDE = { duration: 480, easing: 'cubic-bezier(.3,.7,.2,1)' };
-/** How long after a new line starts drawing its station pops in. */
-const STATION_AFTER_LINE = 170;
+/** How long a new line takes to reach its station when it can start straight away. */
+const LINE_TIME = 200;
+/** Shortest time a line may take, so even a quick build still reads as growing. */
+const MIN_LINE = 110;
+/** Labels and their leader appear this long after their station. */
+const LABEL_AFTER = 140;
 
 function slide(el: Element, dx: number, dy: number): void {
   if (Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5) return;
@@ -133,22 +139,32 @@ export function renderGraph(svg: SVGSVGElement, m: GraphModel, o: RenderOptions 
   const prev = memory.get(svg);
   const motion = !!o.motion && !!prev && !reducedMotion.matches;
   const hasParent = new Set(m.edges.map((e) => e.to.id));
-  const popAt = (n: GraphNode) => (n.delay ?? 0) + (hasParent.has(n.id) ? STATION_AFTER_LINE : 0);
-  const delayStyle = (ms: number) => (ms ? `animation-delay:${Math.round(ms)}ms` : '');
+  /** When a new station pops in: its slot time, plus the time for its line to grow in. */
+  const popAt = (n: GraphNode) => (n.delay ?? 0) + (hasParent.has(n.id) ? LINE_TIME : 0);
+  /** When a station is visible: straight away if it was already drawn. */
+  const shownAt = (n: GraphNode) => (n.pop ? popAt(n) : 0);
+  const ms = (t: number) => `${Math.round(t)}ms`;
 
   const edges = m.edges
     .map((e) => {
       const faded = e.to.faded ? ' opacity="0.3" stroke-dasharray="1 10"' : '';
-      const draw = e.to.pop && !e.to.faded;
-      const extra = draw ? ` class="draw" pathLength="1"` : '';
-      const delay = draw && e.to.delay ? `;${delayStyle(e.to.delay)}` : '';
-      return `<path data-e="${esc(e.to.id)}" d="${edgePath(e, m.dx)}" fill="none" stroke-width="${width}" stroke-linecap="round" style="stroke:${stroke(e.line)}${delay}"${faded}${extra}/>`;
+      let timing = '';
+      let extra = '';
+      if (e.to.pop && !e.to.faded) {
+        // Grow from the parent once it shows (or from the child's slot if the parent was already
+        // there), arriving as the child pops.
+        const end = popAt(e.to);
+        const start = Math.min(e.from.pop ? shownAt(e.from) : (e.to.delay ?? 0), end - MIN_LINE);
+        timing = `;animation-delay:${ms(start)};animation-duration:${ms(end - start)}`;
+        extra = ` class="draw" pathLength="1"`;
+      }
+      return `<path data-e="${esc(e.to.id)}" d="${edgePath(e, m.dx)}" fill="none" stroke-width="${width}" stroke-linecap="round" style="stroke:${stroke(e.line)}${timing}"${faded}${extra}/>`;
     })
     .join('');
 
   const nodes = m.nodes
     .map((n) => {
-      const anim = n.pop ? ` class="pop" style="${delayStyle(popAt(n))}"` : '';
+      const anim = n.pop ? ` class="pop" style="animation-delay:${ms(popAt(n))}"` : '';
       const title = n.title ? `<title>${esc(n.title)}</title>` : '';
       const label = n.label ? `<text class="m" x="${n.x}" y="${n.y + R + 20}" text-anchor="middle" font-size="13">${esc(n.label)}</text>` : '';
       const fill = n.head ? stroke(n.line) : 'var(--sheet)';
@@ -182,12 +198,15 @@ export function renderGraph(svg: SVGSVGElement, m: GraphModel, o: RenderOptions 
         // When animating a change, only labels that did not exist before pop in (existing ones slide);
         // on a fresh draw, labels appear with their station.
         const appears = motion ? !prev?.pills.has(p.key) : at.pop;
-        const anim = appears ? ` class="pop" style="${delayStyle(at.pop ? popAt(at) + 140 : 0)}"` : '';
+        const anim = appears ? ` class="pop" style="animation-delay:${ms(at.pop ? popAt(at) + LABEL_AFTER : 0)}"` : '';
         return `<g data-p="${esc(p.key)}"${anim}>${pillShape(p, x, y, w)}</g>`;
       });
       leaderTop.set(at.id, top);
-      const fade = at.pop ? ` class="fade" style="${delayStyle(popAt(at) + 140)}"` : '';
-      leaders.push(`<path data-l="${esc(at.id)}" d="M${at.x} ${top}V${at.y - R}" stroke-width="2" opacity="${at.faded ? 0.2 : 0.5}" style="stroke:var(--ink)"${fade}/>`);
+      // One style attribute only: a second one is ignored by the browser, which used to drop this
+      // delay and show the leader before its labels.
+      const fade = at.pop ? ` class="fade"` : '';
+      const delay = at.pop ? `;animation-delay:${ms(popAt(at) + LABEL_AFTER)}` : '';
+      leaders.push(`<path data-l="${esc(at.id)}" d="M${at.x} ${top}V${at.y - R}" stroke-width="2" opacity="${at.faded ? 0.2 : 0.5}" style="stroke:var(--ink)${delay}"${fade}/>`);
       return shapes;
     })
     .join('');

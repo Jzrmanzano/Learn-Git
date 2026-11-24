@@ -24,6 +24,7 @@
   --l5:light-dark(#007c88,#35c6d4);--l5-on:light-dark(#ffffff,#0f1a2e);
   /* Terminal: a navy sign panel in both themes. */
   --term:light-dark(#14223b,#0a1322);
+  --term-edge:light-dark(#14223b,#33496f);
   --term-rule:light-dark(#2b3f66,#1f2e4c);
   --term-ink:#dde6f3;
   --term-dim:#8d9cb6;

@@ -1,6 +1,4 @@
 // Cheat sheet: before/after diagrams for merge vs rebase, reset vs revert and fetch vs pull.
-import './styles.css';
-import './cheatsheet.css';
 import { mountStaticGraph, type StaticGraph } from './graph/static';
 import { initTheme } from './theme';
 

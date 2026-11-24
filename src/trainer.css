@@ -58,15 +58,17 @@
 .hint{font:15px/1.5 var(--mono);background:var(--paper);border-radius:10px;padding:10px 14px;margin:14px 0 0;overflow-wrap:anywhere}
 
 /* Terminal */
-.term{background:var(--term);color:var(--term-ink);border-radius:14px;font:15px/1.55 var(--mono);display:flex;flex-direction:column;height:360px;overflow:hidden}
-#out{flex:1;overflow:auto;padding:14px 18px 6px;white-space:pre-wrap;overflow-wrap:anywhere;scrollbar-width:thin}
+/* The prompt follows the last line of output, as in a real terminal, so it sits just under the
+   lesson instead of at the foot of a tall empty box. The box grows with output, then scrolls. */
+.term{background:var(--term);color:var(--term-ink);border:1px solid var(--term-edge);border-radius:14px;font:15px/1.55 var(--mono);display:flex;flex-direction:column;min-height:180px;max-height:380px;overflow:hidden;cursor:text}
+.term:focus-within{border-color:var(--term-prompt);box-shadow:0 0 0 1px var(--term-prompt)}
+#out{flex:0 1 auto;min-height:0;overflow:auto;padding:14px 18px 0;white-space:pre-wrap;overflow-wrap:anywhere;scrollbar-width:thin}
 #out .cmd{color:#fff;margin-top:8px}
 #out .cmd::before{content:"$ ";color:var(--term-prompt)}
 #out .err{color:var(--term-err)}
 #out .note{color:var(--term-note);font:15px/1.5 var(--display);margin:3px 0 8px;padding-left:12px;border-left:2px solid #2f6b58}
 #out .ok{color:var(--term-ok);font-weight:600;margin:6px 0}
-form.in{display:flex;align-items:center;gap:10px;padding:6px 18px 10px;border-top:1px solid var(--term-rule)}
-form.in:focus-within{box-shadow:inset 0 0 0 2px var(--term-prompt)}
+form.in{flex:none;display:flex;align-items:center;gap:10px;padding:2px 18px 12px}
 #pr{color:var(--term-prompt);white-space:nowrap}
 #cmd{flex:1;background:transparent;border:0;color:#fff;font:16px var(--mono);min-height:44px;outline:none}
 #cmd::placeholder{color:var(--term-dim)}
@@ -85,7 +87,7 @@ form.in:focus-within{box-shadow:inset 0 0 0 2px var(--term-prompt)}
 kbd{display:inline-block;font:600 13px/1.4 var(--mono);border:1px solid var(--rule);border-bottom-width:2px;border-radius:5px;padding:1px 6px;width:max-content}
 
 @media(max-width:980px){.trainer{grid-template-columns:minmax(0,1fr)}.board{position:static}.gw{height:360px}.refhead{grid-template-columns:minmax(0,1fr)}.qref{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:600px){.route{flex-wrap:wrap;padding-bottom:12px}.stops{flex-basis:100%}.qref{grid-template-columns:minmax(0,1fr)}.lesson{padding:18px}.bullet{width:46px;height:46px;font-size:20px}.gw{height:320px}.term{height:320px}}
+@media(max-width:600px){.route{flex-wrap:wrap;padding-bottom:12px}.stops{flex-basis:100%}.qref{grid-template-columns:minmax(0,1fr)}.lesson{padding:18px}.bullet{width:46px;height:46px;font-size:20px}.gw{height:320px}.term{max-height:320px}}
 
 /* Motion that answers the student: finishing a goal fills its station with a bump, flashes the
    goal box and nudges Next level once; the hint slides in when asked for; the "you are here"
@@ -101,3 +103,18 @@ kbd{display:inline-block;font:600 13px/1.4 var(--mono);border:1px solid var(--ru
 .goal.celebrate~.row #nb{animation:nudge .6s .35s ease-in-out}
 @keyframes nudge{50%{transform:scale(1.07)}}
 @media(prefers-reduced-motion:reduce){.stop button{transition:none}.stop.just-done button,.goal.celebrate,.goal.celebrate .st,.hint.reveal,.goal.celebrate~.row #nb{animation:none}}
+
+/* Short laptop screens: tighten the route strip and lesson so the terminal sits higher */
+@media(min-width:981px) and (max-height:820px){
+  .route{padding-block:2px}
+  .stops{padding-block:7px}
+  .stop button{width:34px;height:34px;border-width:4px;font-size:13px}
+  .trainer{padding-top:14px;gap:16px}
+  .side{gap:12px}
+  .lesson{padding:16px 20px 18px}
+  .lhead{margin-bottom:10px}
+  .bullet{width:46px;height:46px;font-size:21px}
+  .lesson h1{font-size:28px}
+  .story{margin-bottom:12px;line-height:1.5}
+  .goal{margin-bottom:12px;padding:10px 14px}
+}

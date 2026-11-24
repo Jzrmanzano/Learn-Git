@@ -1,6 +1,4 @@
 // Landing page: the live demo repository in the hero, and progress marks on the route of levels.
-import './styles.css';
-import './home.css';
 import { drawRepo, type DrawOptions } from './graph/live';
 import { LEVELS } from './levels';
 import { hashFor, nextLevel, readProgress } from './progress';
@@ -88,8 +86,11 @@ if (graph && svg && form && input && prompt && out && tryRow) {
   let first = true;
   new ResizeObserver(() => {
     if (!first && `${graph.offsetWidth}x${graph.offsetHeight}` === drawnSize) return;
-    requestAnimationFrame(() => draw(first ? { stagger: 90 } : {}));
+    // Decide now, not inside the frame callback: by then `first` is already false, which used to
+    // skip the staggered opening and draw every line at once.
+    const options: DrawOptions = first ? { stagger: 90 } : {};
     first = false;
+    requestAnimationFrame(() => draw(options));
   }).observe(graph);
 }
 

@@ -4,10 +4,12 @@
 <meta name="description" content="Git cheat sheet with diagrams: commits, branches, HEAD and origin; merge vs rebase, reset vs revert, fetch vs pull; and every command LearnGit supports.">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <script>try{var t=localStorage.getItem('learngit.theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+<style>:root{color-scheme:light dark;background:light-dark(#eef1f5,#0f1a2e);color:light-dark(#14223b,#eaf0f8)}:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}</style>
+<link rel="stylesheet" href="/src/styles.css"><link rel="stylesheet" href="/src/cheatsheet.css">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Overpass+Mono:wght@400;600&family=Overpass:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 </head><body>
-<nav class="nav" aria-label="Site"><a class="brand" href="index.html"><img src="/favicon.svg" alt="">LearnGit</a><a class="l" href="index.html#levels">Levels</a><a class="l" href="cheatsheet.html" aria-current="page">Cheat sheet</a><button class="theme" type="button" data-theme-toggle aria-pressed="false" aria-label="Dark theme"><svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.6A8.6 8.6 0 0 1 9.4 3.5a8.6 8.6 0 1 0 11.1 11.1Z" fill="currentColor"/></svg><svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.6" fill="currentColor"/><path d="M12 1.8v2.6M12 19.6v2.6M1.8 12h2.6M19.6 12h2.6M4.8 4.8l1.8 1.8M17.4 17.4l1.8 1.8M4.8 19.2l1.8-1.8M17.4 6.6l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button><a class="btn" href="learn.html#level-1">Start learning</a></nav>
+<nav class="nav" aria-label="Site"><a class="brand" href="index.html"><img src="/favicon.svg" alt="" width="32" height="32">LearnGit</a><a class="l" href="index.html#levels">Levels</a><a class="l" href="cheatsheet.html" aria-current="page">Cheat sheet</a><button class="theme" type="button" data-theme-toggle aria-pressed="false" aria-label="Dark theme"><svg class="moon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.6A8.6 8.6 0 0 1 9.4 3.5a8.6 8.6 0 1 0 11.1 11.1Z" fill="currentColor"/></svg><svg class="sun" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.6" fill="currentColor"/><path d="M12 1.8v2.6M12 19.6v2.6M1.8 12h2.6M19.6 12h2.6M4.8 4.8l1.8 1.8M17.4 17.4l1.8 1.8M4.8 19.2l1.8-1.8M17.4 6.6l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button><a class="btn" href="learn.html#level-1">Start learning</a></nav>
 <main>
 <header class="band head"><div class="wrap"><h1>Git cheat sheet</h1><p>The ideas behind the commands, three comparisons that trip everyone up, and every command LearnGit understands, with a level to practise each one.</p></div></header>
 <nav class="jump" aria-label="On this page"><a href="#ideas">Key ideas</a><a href="#merge-rebase">Merge or rebase</a><a href="#reset-revert">Reset or revert</a><a href="#fetch-pull">Fetch or pull</a><a href="#commands">Commands</a></nav>
@@ -16,9 +18,9 @@
   <h2 id="ideas-h">Four ideas explain almost everything</h2>
   <p>Once these click, most Git commands are ways of moving labels around.</p>
   <div class="ideas">
-    <div><h3><svg class="sym" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="9" stroke-width="4" style="fill:var(--sheet);stroke:var(--l0)"/></svg>A commit</h3><p>A saved snapshot of the project. It never changes, and it points back to its parent, so history is a chain you can walk backwards.</p></div>
+    <div><h3><svg class="sym" width="24" height="24" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="9" stroke-width="4" style="fill:var(--sheet);stroke:var(--l0)"/></svg>A commit</h3><p>A saved snapshot of the project. It never changes, and it points back to its parent, so history is a chain you can walk backwards.</p></div>
     <div><h3><span class="pill">main</span>A branch</h3><p>A movable label on one commit. Committing moves the label forward. Creating a branch copies nothing; it just adds a label.</p></div>
-    <div><h3><svg class="sym" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="9" stroke-width="4" style="fill:var(--l0);stroke:var(--l0)"/></svg>HEAD</h3><p>Where you are. Usually HEAD points at a branch. If it points straight at a commit, that is a detached HEAD.</p></div>
+    <div><h3><svg class="sym" width="24" height="24" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="9" stroke-width="4" style="fill:var(--l0);stroke:var(--l0)"/></svg>HEAD</h3><p>Where you are. Usually HEAD points at a branch. If it points straight at a commit, that is a detached HEAD.</p></div>
     <div><h3><span class="pill remote">origin/main</span>origin</h3><p>The shared copy of the repository on a server. origin/main is your bookmark of where its main was the last time you fetched or pushed.</p></div>
   </div>
 </div></section>
@@ -107,6 +109,6 @@
   <p class="aside">Commands that work on files, such as <code>git add</code>, <code>git stash</code> and <code>git diff</code>, explain themselves in the trainer but change nothing, because it has no files.</p>
 </div></section>
 </main>
-<footer class="site"><div class="wrap"><a class="brand" href="index.html"><img src="/favicon.svg" alt="">LearnGit</a><a href="learn.html">Trainer</a><a href="cheatsheet.html">Cheat sheet</a><span>Free to use. No account needed.</span></div></footer>
+<footer class="site"><div class="wrap"><a class="brand" href="index.html"><img src="/favicon.svg" alt="" width="26" height="26">LearnGit</a><a href="learn.html">Trainer</a><a href="cheatsheet.html">Cheat sheet</a><span>Free to use. No account needed.</span></div></footer>
 <script type="module" src="/src/cheatsheet.ts"></script>
 </body></html>
