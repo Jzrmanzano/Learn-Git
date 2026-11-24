@@ -232,9 +232,9 @@ window.addEventListener('hashchange', () => {
   if (i !== null && i !== level) load(i);
 });
 
-// Redraw to fit when the graph area really changes size (not on the observer's first call, which
-// would cut short the opening animation).
-const sizeOf = () => `${graphWrap.clientWidth}x${graphWrap.clientHeight}`;
+// Redraw to fit when the graph area really changes size: not on the observer's first call (which
+// would cut short the opening animation), and not when a scrollbar comes or goes (outer size).
+const sizeOf = () => `${graphWrap.offsetWidth}x${graphWrap.offsetHeight}`;
 let drawnSize = sizeOf();
 new ResizeObserver(() => {
   if (sizeOf() === drawnSize) return;

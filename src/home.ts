@@ -46,7 +46,7 @@ if (graph && svg && form && input && prompt && out && tryRow) {
   // The page's one orchestrated moment: on first draw the demo's history builds up along its lines.
   // After that, commands animate what changed, and resizes just refit.
   const draw = (o: DrawOptions = {}) => {
-    drawnSize = `${graph.clientWidth}x${graph.clientHeight}`;
+    drawnSize = `${graph.offsetWidth}x${graph.offsetHeight}`;
     drawRepo(graph, svg, repo, seen, o);
     prompt.textContent = `(${repo.currentBranch ?? `HEAD ${repo.headId}`}) $`;
   };
@@ -87,7 +87,7 @@ if (graph && svg && form && input && prompt && out && tryRow) {
 
   let first = true;
   new ResizeObserver(() => {
-    if (!first && `${graph.clientWidth}x${graph.clientHeight}` === drawnSize) return;
+    if (!first && `${graph.offsetWidth}x${graph.offsetHeight}` === drawnSize) return;
     requestAnimationFrame(() => draw(first ? { stagger: 90 } : {}));
     first = false;
   }).observe(graph);

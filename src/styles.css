@@ -115,3 +115,7 @@ footer.site a:not(.brand){color:var(--mute)}
 .pill{display:inline-flex;align-items:center;height:24px;padding:3px 11px 0;border-radius:12px;background:var(--l0);color:var(--l0-on);font:700 13px/1 var(--display);white-space:nowrap}
 .pill.remote{background:var(--sheet);color:var(--ink);border:2px dashed var(--l0);padding:2px 9px 0}
 .pill.tag{background:radial-gradient(circle at 10px 50%,var(--sheet) 2.5px,transparent 3px),var(--ink);color:var(--sheet);border-radius:4px;padding-left:19px;clip-path:polygon(10px 0,100% 0,100% 100%,10px 100%,0 50%)}
+
+/* Scrollbars in scrolling areas take the theme's colours instead of the system's */
+.gw,.dgraph,.stops,.jump,.scroll{scrollbar-color:color-mix(in srgb,var(--mute) 55%,transparent) transparent}
+#out{scrollbar-color:var(--term-rule) transparent}

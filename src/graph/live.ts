@@ -17,6 +17,41 @@ export interface DrawOptions {
   motion?: boolean;
 }
 
+const scrollbarSizes = new WeakMap<HTMLElement, number>();
+
+/** Thickness of a scrollbar in this wrapper (0 where scrollbars overlay the content), measured once. */
+function scrollbarSize(wrap: HTMLElement): number {
+  let size = scrollbarSizes.get(wrap);
+  if (size === undefined) {
+    const probe = document.createElement('div');
+    probe.className = wrap.className;
+    probe.style.cssText = 'position:absolute;visibility:hidden;width:100px;height:100px;overflow:scroll';
+    document.body.append(probe);
+    size = probe.offsetWidth - probe.clientWidth;
+    probe.remove();
+    scrollbarSizes.set(wrap, size);
+  }
+  return size;
+}
+
+/**
+ * The drawing's size: the visible box when the graph fits, the graph's own size on any axis where it
+ * does not. Worked out from the wrapper's outer box, which stays the same whether or not a scrollbar
+ * is showing, and kept 1px inside it because browsers round the sizes they report. Sizing to the
+ * rounded size instead overflowed by a fraction of a pixel, which switched a scrollbar on, which
+ * shrank the box, which triggered a redraw that fitted, which switched it off again: a flicker loop.
+ * Assumes the wrapper has no border or padding.
+ */
+function canvasSize(wrap: HTMLElement, contentW: number, contentH: number): [number, number] {
+  const bar = scrollbarSize(wrap);
+  const boxW = wrap.offsetWidth - 1;
+  const boxH = wrap.offsetHeight - 1;
+  let scrollX = contentW > boxW;
+  const scrollY = contentH > (scrollX ? boxH - bar : boxH);
+  scrollX = contentW > (scrollY ? boxW - bar : boxW);
+  return [scrollX ? contentW : scrollY ? boxW - bar : boxW, scrollY ? contentH : scrollX ? boxH - bar : boxH];
+}
+
 /** Draws the repo into svg, sized to fill wrap. `seen` holds IDs already drawn, so only new commits pop in. */
 export function drawRepo(wrap: HTMLElement, svg: SVGSVGElement, repo: Repo, seen: Set<string>, o: DrawOptions = {}): void {
   const { commits, branches, lanes, tags, tracking } = repo.state;
@@ -50,8 +85,7 @@ export function drawRepo(wrap: HTMLElement, svg: SVGSVGElement, repo: Repo, seen
 
   const contentW = (all.length - 1) * DX + 2 * PAD;
   const contentH = top + (usedLanes.length - 1) * LANE_H + 56;
-  const width = Math.max(wrap.clientWidth, contentW);
-  const height = Math.max(wrap.clientHeight, contentH);
+  const [width, height] = canvasSize(wrap, contentW, contentH);
   const ox = (width - contentW) / 2 + PAD;
   const oy = (height - contentH) / 2 + top;
 
