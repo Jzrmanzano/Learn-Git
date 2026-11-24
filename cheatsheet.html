@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LearnGit Cheat Sheet</title>
+<meta name="description" content="Git cheat sheet with diagrams: commits, branches, HEAD and origin; merge vs rebase, reset vs revert, fetch vs pull; and every command LearnGit supports.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<script>try{var t=localStorage.getItem('learngit.theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Overpass+Mono:wght@400;600&family=Overpass:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+</head><body>
+<nav class="nav" aria-label="Site"><a class="brand" href="index.html"><img src="/favicon.svg" alt="">LearnGit</a><a class="l" href="index.html#levels">Levels</a><a class="l" href="cheatsheet.html" aria-current="page">Cheat sheet</a><button class="theme" type="button" data-theme-toggle aria-pressed="false" aria-label="Dark theme"><svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.6A8.6 8.6 0 0 1 9.4 3.5a8.6 8.6 0 1 0 11.1 11.1Z" fill="currentColor"/></svg><svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.6" fill="currentColor"/><path d="M12 1.8v2.6M12 19.6v2.6M1.8 12h2.6M19.6 12h2.6M4.8 4.8l1.8 1.8M17.4 17.4l1.8 1.8M4.8 19.2l1.8-1.8M17.4 6.6l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button><a class="btn" href="learn.html#level-1">Start learning</a></nav>
+<main>
+<header class="band head"><div class="wrap"><h1>Git cheat sheet</h1><p>The ideas behind the commands, three comparisons that trip everyone up, and every command LearnGit understands, with a level to practise each one.</p></div></header>
+<nav class="jump" aria-label="On this page"><a href="#ideas">Key ideas</a><a href="#merge-rebase">Merge or rebase</a><a href="#reset-revert">Reset or revert</a><a href="#fetch-pull">Fetch or pull</a><a href="#commands">Commands</a></nav>
+
+<section class="band sec" id="ideas" aria-labelledby="ideas-h"><div class="wrap">
+  <h2 id="ideas-h">Four ideas explain almost everything</h2>
+  <p>Once these click, most Git commands are ways of moving labels around.</p>
+  <div class="ideas">
+    <div><h3><svg class="sym" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="9" stroke-width="4" style="fill:var(--sheet);stroke:var(--l0)"/></svg>A commit</h3><p>A saved snapshot of the project. It never changes, and it points back to its parent, so history is a chain you can walk backwards.</p></div>
+    <div><h3><span class="pill">main</span>A branch</h3><p>A movable label on one commit. Committing moves the label forward. Creating a branch copies nothing; it just adds a label.</p></div>
+    <div><h3><svg class="sym" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="9" stroke-width="4" style="fill:var(--l0);stroke:var(--l0)"/></svg>HEAD</h3><p>Where you are. Usually HEAD points at a branch. If it points straight at a commit, that is a detached HEAD.</p></div>
+    <div><h3><span class="pill remote">origin/main</span>origin</h3><p>The shared copy of the repository on a server. origin/main is your bookmark of where its main was the last time you fetched or pushed.</p></div>
+  </div>
+</div></section>
+
+<section class="band sec" id="merge-rebase" aria-labelledby="mr-h"><div class="wrap">
+  <h2 id="mr-h">Merge or rebase?</h2>
+  <p>Both bring feature's work together with main's. They differ in the history they leave behind.</p>
+  <div class="pair">
+    <figure><div class="fig" id="g-merge" role="img" aria-label="Merge: C5 joins main's C4 and feature's C3"><svg></svg></div><figcaption><b>git merge feature</b>Adds merge commit C5 with two parents. History shows exactly what happened, side branches and all.</figcaption></figure>
+    <figure><div class="fig" id="g-rebase" role="img" aria-label="Rebase: C2 and C3 copied on top of C4 as C2' and C3', originals faded"><svg></svg></div><figcaption><b>git rebase main, run on feature</b>Copies C2 and C3 onto C4 as C2' and C3'. One straight line; the originals are left behind.</figcaption></figure>
+  </div>
+  <p class="rule"><b>Rule of thumb:</b> rebase your own unshared branch to tidy it up; merge when the branch is shared with others.</p>
+</div></section>
+
+<section class="band sec" id="reset-revert" aria-labelledby="rr-h"><div class="wrap">
+  <h2 id="rr-h">Reset or revert?</h2>
+  <p>Both undo C3. Only one of them is safe once teammates have the commit.</p>
+  <div class="pair">
+    <figure><div class="fig" id="g-reset" role="img" aria-label="Reset: main moved back to C2, C3 faded"><svg></svg></div><figcaption><b>git reset --hard HEAD~1</b>Moves main back to C2. C3 drops out of history, which breaks things for anyone who already pulled it. git reflog can still find it.</figcaption></figure>
+    <figure><div class="fig" id="g-revert" role="img" aria-label="Revert: new commit C4 undoes C3"><svg></svg></div><figcaption><b>git revert C3</b>Adds C4, a new commit that undoes C3's changes. Nothing is rewritten, so it is safe on shared branches.</figcaption></figure>
+  </div>
+</div></section>
+
+<section class="band sec" id="fetch-pull" aria-labelledby="fp-h"><div class="wrap">
+  <h2 id="fp-h">Fetch or pull?</h2>
+  <p>A teammate pushed C2 to origin. Both commands download it. Only one of them changes your branch.</p>
+  <div class="pair">
+    <figure><div class="fig" id="g-fetch" role="img" aria-label="Fetch: C2 downloaded and origin/main moved to it; main stays on C1"><svg></svg></div><figcaption><b>git fetch</b>Downloads C2 and moves origin/main to it. main stays on C1, so nothing in your work changes until you merge.</figcaption></figure>
+    <figure><div class="fig" id="g-pull" role="img" aria-label="Pull: C2 fetched and merged into main with merge commit C4"><svg></svg></div><figcaption><b>git pull</b>Fetches, then merges origin/main into main. You had C3 of your own, so the merge made C4. With --rebase, C3 would be replayed on top of C2 instead.</figcaption></figure>
+  </div>
+  <p class="rule"><b>Rule of thumb:</b> fetch when you want to look before anything changes; pull when you are ready to bring the work in. If a push is rejected, pull first.</p>
+</div></section>
+
+<section class="band sec" id="commands" aria-labelledby="cmd-h"><div class="wrap">
+  <h2 id="cmd-h">Commands</h2>
+  <p>Refer to commits by branch or tag name, by ID such as <code>C2</code>, or relative to HEAD: <code>HEAD~2</code> is two commits back, <code>main^</code> is main's parent and <code>HEAD@{1}</code> is where HEAD was one move ago.</p>
+  <div class="scroll"><table class="stack">
+    <thead><tr><th scope="col">Command</th><th scope="col">What it does</th><th scope="col">Practise</th></tr></thead>
+    <tbody>
+      <tr class="grp"><th colspan="3" scope="colgroup">Making history</th></tr>
+      <tr><td><code>git commit -m "msg"</code></td><td>Save a new snapshot on the current branch.</td><td><a href="learn.html#level-1">First commits</a></td></tr>
+      <tr><td><code>git commit --amend</code></td><td>Replace the last commit with a new one. The old one fades out.</td><td><a href="learn.html#sandbox">Sandbox</a></td></tr>
+      <tr><td><code>git status</code></td><td>Which branch you are on, and how it compares with its copy on origin.</td><td><a href="learn.html#level-13">Push your work</a></td></tr>
+      <tr><td><code>git log</code></td><td>History behind HEAD. Name a ref to start there, add <code>--all</code> for every branch, or use <code>main..feature</code> for commits feature has and main lacks.</td><td><a href="learn.html#sandbox">Sandbox</a></td></tr>
+      <tr><td><code>git show ref</code></td><td>One commit's message, parents and labels.</td><td><a href="learn.html#sandbox">Sandbox</a></td></tr>
+    </tbody>
+    <tbody>
+      <tr class="grp"><th colspan="3" scope="colgroup">Branches and tags</th></tr>
+      <tr><td><code>git branch name</code></td><td>Create a branch label at HEAD, or at a commit named after it. Alone it lists branches; <code>-a</code> includes remote-tracking ones.</td><td><a href="learn.html#level-2">Branch out</a></td></tr>
+      <tr><td><code>git branch -d name</code></td><td>Delete a branch label. <code>-D</code> deletes it even if its commits are not merged anywhere.</td><td><a href="learn.html#sandbox">Sandbox</a></td></tr>
+      <tr><td><code>git branch -m old new</code></td><td>Rename a branch. With one name, renames the branch you are on.</td><td><a href="learn.html#sandbox">Sandbox</a></td></tr>
+      <tr><td><code>git branch -f name ref</code></td><td>Move a branch label to another commit.</td><td><a href="learn.html#sandbox">Sandbox</a></td></tr>
+      <tr><td><code>git switch name</code></td><td>Move HEAD onto a branch. <code>-c name</code> creates it first; <code>git switch -</code> goes back to the previous branch.</td><td><a href="learn.html#level-3">Parallel work</a></td></tr>
+      <tr><td><code>git checkout ref</code></td><td>Switch to a branch, or visit a commit or tag directly (detached HEAD). <code>-b name</code> creates a branch.</td><td><a href="learn.html#level-7">Detached HEAD</a></td></tr>
+      <tr><td><code>git tag name</code></td><td>Put a fixed label on a commit, usually a release. Alone it lists tags; <code>-d</code> deletes one.</td><td><a href="learn.html#level-12">Tag a release</a></td></tr>
+    </tbody>
+    <tbody>
+      <tr class="grp"><th colspan="3" scope="colgroup">Combining work</th></tr>
+      <tr><td><code>git merge name</code></td><td>Join another branch into this one. Fast-forwards when it can; <code>--no-ff</code> always makes a merge commit and <code>--ff-only</code> refuses to.</td><td><a href="learn.html#level-4">Merge it back</a><a href="learn.html#level-5">Fast-forward</a></td></tr>
+      <tr><td><code>git rebase name</code></td><td>Replay this branch's commits on top of another for a straight history.</td><td><a href="learn.html#level-6">Rebase</a></td></tr>
+      <tr><td><code>git cherry-pick ref</code></td><td>Copy commits onto the current branch. Takes several IDs, or a range like <code>C2..C4</code>.</td><td><a href="learn.html#level-10">Cherry-pick</a></td></tr>
+      <tr><td><code>git merge-base a b</code></td><td>The newest commit two branches share: the point where they split.</td><td><a href="learn.html#sandbox">Sandbox</a></td></tr>
+    </tbody>
+    <tbody>
+      <tr class="grp"><th colspan="3" scope="colgroup">Undoing</th></tr>
+      <tr><td><code>git reset --hard ref</code></td><td>Move the current branch to another commit. Rewrites history, so keep it to unshared work.</td><td><a href="learn.html#level-8">Reset</a></td></tr>
+      <tr><td><code>git revert ref</code></td><td>Add a commit that undoes an earlier one. Safe on shared branches.</td><td><a href="learn.html#level-9">Revert</a></td></tr>
+      <tr><td><code>git reflog</code></td><td>Every commit HEAD has pointed at, newest first, including ones no branch points to any more.</td><td><a href="learn.html#level-11">Find a lost commit</a></td></tr>
+    </tbody>
+    <tbody>
+      <tr class="grp"><th colspan="3" scope="colgroup">Remotes</th></tr>
+      <tr><td><code>git remote add origin url</code></td><td>Connect a remote. <code>git remote -v</code> lists remotes.</td><td><a href="learn.html#sandbox">Sandbox</a></td></tr>
+      <tr><td><code>git fetch</code></td><td>Download new commits and move the origin/… bookmarks. Your own branches stay put.</td><td><a href="learn.html#level-14">Pull</a></td></tr>
+      <tr><td><code>git pull</code></td><td>Fetch, then merge origin's branch into yours. <code>--rebase</code> replays your commits on top instead.</td><td><a href="learn.html#level-14">Pull</a><a href="learn.html#level-15">Rejected push</a></td></tr>
+      <tr><td><code>git push</code></td><td>Send your commits to origin. Refused if origin has commits you do not; pull first.</td><td><a href="learn.html#level-13">Push your work</a><a href="learn.html#level-15">Rejected push</a></td></tr>
+      <tr><td><code>git push -u origin name</code></td><td>First push of a new branch. <code>-u</code> links it to origin/name so later pushes and pulls know where to go.</td><td><a href="learn.html#level-16">Publish a branch</a></td></tr>
+      <tr><td><code>git push --force</code></td><td>Overwrite origin's branch even if that drops someone's commits. Avoid on shared branches.</td><td><a href="learn.html#sandbox">Sandbox</a></td></tr>
+      <tr><td><code>git push origin --delete name</code></td><td>Delete a branch on origin.</td><td><a href="learn.html#sandbox">Sandbox</a></td></tr>
+    </tbody>
+    <tbody>
+      <tr class="grp"><th colspan="3" scope="colgroup">Trainer only</th></tr>
+      <tr><td><code>teammate</code></td><td>Pretend a teammate pushed a commit to origin, so you can practise fetch and pull. Add a branch name to push there instead of main.</td><td><a href="learn.html#sandbox">Sandbox</a></td></tr>
+      <tr><td><code>undo</code>, <code>clear</code>, <code>help</code></td><td>Undo the last command, clear the terminal, list commands. Up and down arrows recall earlier commands.</td><td><a href="learn.html#sandbox">Sandbox</a></td></tr>
+    </tbody>
+  </table></div>
+  <p class="aside">Commands that work on files, such as <code>git add</code>, <code>git stash</code> and <code>git diff</code>, explain themselves in the trainer but change nothing, because it has no files.</p>
+</div></section>
+</main>
+<footer class="site"><div class="wrap"><a class="brand" href="index.html"><img src="/favicon.svg" alt="">LearnGit</a><a href="learn.html">Trainer</a><a href="cheatsheet.html">Cheat sheet</a><span>Free to use. No account needed.</span></div></footer>
+<script type="module" src="/src/cheatsheet.ts"></script>
+</body></html>

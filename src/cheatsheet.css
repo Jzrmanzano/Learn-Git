@@ -1,0 +1,39 @@
+/* VOICE reference sheet, calm and scannable
+   IDEA the transit map's legend card: key ideas, then side-by-side route comparisons
+   PICTURE paired commit graphs for merge vs rebase, reset vs revert and fetch vs pull
+   LAYOUT section links, four key ideas in a row, comparisons as two map sheets, then the
+     command table grouped by job; phone stacks */
+.head{padding-bottom:clamp(20px,3vw,32px)}
+.head h1{font-size:clamp(46px,6.4vw,84px);font-weight:900;letter-spacing:-.035em;line-height:.92}
+.head p{font-size:19px;color:var(--mute);max-width:56ch;margin:18px 0 0}
+.jump{display:flex;gap:8px;overflow-x:auto;padding:0 var(--gut) clamp(24px,3vw,40px)}
+.jump a{flex:none;text-decoration:none;color:var(--ink);border:2px solid var(--rule);border-radius:22px;padding:9px 16px 6px;font-weight:700}
+.jump a:hover{border-color:var(--ink)}
+.sec{border-top:1px solid var(--rule);padding-top:clamp(36px,4.5vw,64px);padding-bottom:clamp(36px,4.5vw,64px)}
+.sec h2{font-size:clamp(30px,3.6vw,44px);margin-bottom:10px}
+.sec>.wrap>p:not(.rule){color:var(--mute);margin:0 0 24px;max-width:62ch;font-size:18px}
+.ideas{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px 32px}
+.ideas>div{border-top:3px solid var(--ink);padding-top:14px}
+.ideas h3{display:flex;flex-wrap:wrap;align-items:center;gap:10px;font-size:22px;margin-bottom:10px}
+.ideas .sym{width:24px;height:24px}
+.ideas p{margin:0}
+.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.pair figure{margin:0;background:var(--sheet);border:1px solid var(--rule);border-radius:14px;overflow:hidden}
+.pair .fig{--h:250px}
+.pair figcaption{border-top:1px solid var(--rule);padding:14px 20px 16px}
+.pair figcaption b{display:block;font:600 17px/1.4 var(--mono);margin-bottom:4px}
+.rule{margin:20px 0 0;padding:14px 20px 12px;border-left:6px solid var(--ink);background:var(--sheet);border-radius:0 10px 10px 0;max-width:none}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%}
+th,td{text-align:left;padding:12px 18px 10px 0;border-bottom:1px solid var(--rule);vertical-align:top}
+thead th{font-size:14px;color:var(--mute);font-weight:700;border-bottom:0;padding-bottom:0}
+.grp th{padding:32px 0 8px;font:800 21px/1.2 var(--display);letter-spacing:-.01em;border-bottom:3px solid var(--ink)}
+td:first-child{width:28%}
+td code{font-size:15px}
+td:first-child code{font-weight:600;white-space:nowrap}
+td:last-child{width:16%}
+td a{display:block;width:max-content}
+.aside{margin:24px 0 0;color:var(--mute);font-size:16px}
+@media(max-width:1000px){.ideas{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:720px){.pair{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:600px){.ideas{grid-template-columns:minmax(0,1fr)}.stack thead{display:none}.stack tr{display:grid;padding:10px 0;border-bottom:1px solid var(--rule)}.stack td{border:0;padding:2px 0;width:auto}.stack .grp th{padding-top:24px}td:first-child code{white-space:normal;overflow-wrap:anywhere}}

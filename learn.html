@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LearnGit Trainer</title>
+<meta name="description" content="Type real Git commands and watch the commit graph redraw. Sixteen guided levels, from first commits to push and pull, plus a sandbox.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<script>try{var t=localStorage.getItem('learngit.theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Overpass+Mono:wght@400;600&family=Overpass:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+</head><body>
+<nav class="nav" aria-label="Site"><a class="brand" href="index.html"><img src="/favicon.svg" alt="">LearnGit</a><a class="l" href="index.html#levels">Levels</a><a class="l" href="cheatsheet.html">Cheat sheet</a><button class="theme" type="button" data-theme-toggle aria-pressed="false" aria-label="Dark theme"><svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.6A8.6 8.6 0 0 1 9.4 3.5a8.6 8.6 0 1 0 11.1 11.1Z" fill="currentColor"/></svg><svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.6" fill="currentColor"/><path d="M12 1.8v2.6M12 19.6v2.6M1.8 12h2.6M19.6 12h2.6M4.8 4.8l1.8 1.8M17.4 17.4l1.8 1.8M4.8 19.2l1.8-1.8M17.4 6.6l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></nav>
+<nav class="route" aria-label="Levels"><ol class="stops" id="lv"></ol><p class="prog"><b id="pc">0</b> of <span id="pt">16</span> levels done</p></nav>
+<main class="trainer">
+<section class="board" aria-label="Commit graph">
+  <div class="gw" id="gw"><svg id="g" role="img" aria-label="Commit graph"></svg></div>
+  <p class="origin" id="origin" hidden></p>
+  <ul class="keyline" aria-label="Key">
+    <li><svg class="sym" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="9" stroke-width="4" style="fill:var(--sheet);stroke:var(--l0)"/></svg>Commit</li>
+    <li><svg class="sym" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="9" stroke-width="4" style="fill:var(--l0);stroke:var(--l0)"/></svg>HEAD, where you are</li>
+    <li><span class="pill">main</span>Branch</li>
+    <li><span class="pill remote">origin/main</span>Last known position on origin</li>
+    <li><span class="pill tag">v1.0</span>Tag</li>
+    <li><svg class="sym" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="9" stroke-width="4" opacity=".32" style="fill:var(--sheet);stroke:var(--l0)"/></svg>Not on any branch</li>
+  </ul>
+</section>
+<div class="side">
+  <section class="lesson" id="lesson" aria-label="Lesson"></section>
+  <section class="term" aria-label="Terminal"><div id="out" aria-live="polite"></div><form class="in" id="f"><label for="cmd" id="pr"></label><input id="cmd" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="git commit" enterkeyhint="go"></form></section>
+</div>
+</main>
+<section class="band ref" aria-labelledby="ref-h"><div class="wrap">
+  <div class="refhead"><h2 id="ref-h">Commands this trainer understands</h2><p>Refer to commits by branch or tag name, by ID such as C2, or relative to HEAD: <code>HEAD~2</code> is two commits back, <code>main^</code> is main's parent and <code>HEAD@{1}</code> is where HEAD was one move ago. The <a href="cheatsheet.html#commands">cheat sheet</a> explains every command with a level to practise it.</p></div>
+  <div class="qref">
+    <div><h3>Making history</h3><ul>
+      <li><code>git commit -m "msg"</code><span>new snapshot</span></li>
+      <li><code>git commit --amend</code><span>replace the last commit</span></li>
+      <li><code>git status</code><span>where you are</span></li>
+      <li><code>git log</code><span>also <code>--all</code>, <code>main..feature</code></span></li>
+      <li><code>git show C2</code><span>one commit's details</span></li>
+    </ul></div>
+    <div><h3>Branches and tags</h3><ul>
+      <li><code>git switch name</code><span><code>-c</code> creates, <code>-</code> goes back</span></li>
+      <li><code>git checkout C2</code><span>visit a commit or tag</span></li>
+      <li><code>git branch name</code><span>also <code>-d</code>, <code>-m</code>, <code>-f</code>, <code>-a</code></span></li>
+      <li><code>git tag v1.0</code><span>fixed label; <code>-d</code> deletes</span></li>
+    </ul></div>
+    <div><h3>Combining</h3><ul>
+      <li><code>git merge name</code><span>also <code>--no-ff</code>, <code>--ff-only</code></span></li>
+      <li><code>git rebase name</code><span>replay on top</span></li>
+      <li><code>git cherry-pick C3</code><span>or a range, <code>C2..C4</code></span></li>
+      <li><code>git merge-base a b</code><span>where two lines split</span></li>
+    </ul></div>
+    <div><h3>Undoing</h3><ul>
+      <li><code>git reset --hard ref</code><span>move the branch back</span></li>
+      <li><code>git revert ref</code><span>undo with a new commit</span></li>
+      <li><code>git reflog</code><span>everywhere HEAD has been</span></li>
+    </ul></div>
+    <div><h3>Remotes</h3><ul>
+      <li><code>git fetch</code><span>download, move origin/…</span></li>
+      <li><code>git pull</code><span>fetch, then merge; <code>--rebase</code></span></li>
+      <li><code>git push</code><span>also <code>-u origin name</code>, <code>--force</code>, <code>--delete</code></span></li>
+      <li><code>git remote -v</code><span>or <code>add origin url</code></span></li>
+    </ul></div>
+    <div><h3>Trainer</h3><ul>
+      <li><code>teammate</code><span>a teammate pushes to origin</span></li>
+      <li><code>undo</code><span>take back the last command</span></li>
+      <li><code>clear</code>, <code>help</code><span>tidy up, list commands</span></li>
+      <li><kbd>↑</kbd> <kbd>↓</kbd><span>recall earlier commands</span></li>
+    </ul></div>
+  </div>
+</div></section>
+<footer class="site"><div class="wrap"><a class="brand" href="index.html"><img src="/favicon.svg" alt="">LearnGit</a><a href="learn.html">Trainer</a><a href="cheatsheet.html">Cheat sheet</a><span>Free to use. No account needed.</span></div></footer>
+<script type="module" src="/src/learn.ts"></script>
+</body></html>

@@ -1,0 +1,82 @@
+/* VOICE friendly, exact, made for students and teachers
+   IDEA a transit map: branches are coloured lines, commits are stations, the levels are one route
+   PICTURE a live repository you can type into, right under the headline
+   LAYOUT headline and intro across the top, the live demo full width beneath, then the map key,
+     the route of levels, the classroom notes and a closing band on the main line's blue */
+.hero{padding:clamp(36px,5.5vw,80px) var(--gut) clamp(40px,5vw,72px)}
+.hero .top{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:24px 64px;align-items:end}
+.hero h1{font-size:clamp(46px,6.6vw,90px);font-weight:900;letter-spacing:-.035em;line-height:.92;max-width:12ch}
+.intro p{font-size:19px;line-height:1.55;color:var(--mute);margin:0 0 24px;max-width:46ch}
+.cta{display:flex;flex-wrap:wrap;gap:10px}
+
+/* The live demo: a map sheet with a terminal docked underneath */
+.demo{margin-top:clamp(28px,4vw,52px);border:1px solid var(--rule);border-radius:16px;overflow:hidden;background:var(--sheet)}
+.dgraph{overflow:auto;height:clamp(320px,34vw,420px);scrollbar-width:thin}
+.dgraph svg{display:block}
+.dterm{background:var(--term);color:var(--term-ink);padding:10px clamp(16px,2vw,24px) 16px}
+.din{display:flex;align-items:center;gap:12px;font:18px/1.4 var(--mono);border-bottom:2px solid var(--term-rule)}
+.din:focus-within{border-bottom-color:var(--term-prompt)}
+.din label{color:var(--term-prompt);white-space:nowrap}
+.din input{flex:1;min-height:48px;background:transparent;border:0;color:#fff;font:inherit;outline:none}
+.din input::placeholder{color:var(--term-dim)}
+.run{flex:none;min-height:36px;padding:2px 16px 0;border-radius:18px;border:0;background:var(--term-prompt);color:#0f1a2e;font:700 15px/1 var(--display);cursor:pointer}
+.run:hover{background:#fff}
+.dout{font-size:16px;line-height:1.5;color:var(--term-note);margin:10px 0 12px;min-height:3em;max-width:90ch}
+.dout.err{color:var(--term-err)}
+.try{display:flex;flex-wrap:wrap;gap:8px}
+.try button{min-height:38px;padding:2px 14px 0;border-radius:19px;border:1px solid var(--term-rule);background:transparent;color:var(--term-ink);font:15px/1 var(--mono);cursor:pointer}
+.try button:hover{border-color:var(--term-prompt);color:#fff}
+.try .undo{color:var(--term-dim);border-style:dashed}
+
+/* Section heads */
+.band h2{font-size:clamp(32px,4vw,48px);margin-bottom:14px}
+.lead{font-size:19px;color:var(--mute);max-width:44ch;margin:0 0 28px}
+
+/* Map key: the one framed box on the page, as on a printed map */
+.keysec{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:24px 64px;align-items:start}
+.key{margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:40px;border:2px solid var(--ink);border-radius:12px;padding:6px 28px;background:var(--sheet)}
+.key>div{padding:16px 0;border-top:1px solid var(--rule)}
+.key>div:nth-child(-n+2){border-top:0}
+.key dt{display:grid;grid-template-columns:96px minmax(0,1fr);align-items:center;gap:12px;font-weight:800;font-size:18px;line-height:1.2}
+.key dt>:first-child{justify-self:start}
+.key dd{margin:6px 0 0;color:var(--mute);font-size:16px}
+
+/* Route of levels */
+.levels{background:var(--sheet);border-block:1px solid var(--rule)}
+.route{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:32px 72px;align-items:start}
+.rintro{position:sticky;top:24px}
+.line{list-style:none;margin:0;padding:0}
+.line li{position:relative;padding:0 0 10px 60px}
+.line li::before{content:"";position:absolute;left:19px;top:0;bottom:0;width:8px;background:var(--c)}
+.line li:first-child::before{top:18px}
+.line li.end::before{bottom:auto;height:24px}
+.line .grp{padding:14px 0 12px 60px;font:800 15px/1.2 var(--display);color:var(--mute)}
+.line a{display:block;text-decoration:none;color:var(--ink);padding:8px 12px 10px;margin-left:-12px;border-radius:10px}
+.line a:hover{background:var(--tint)}
+.line .n{position:absolute;left:5px;top:6px;display:grid;place-items:center;width:36px;height:36px;padding-top:3px;border-radius:50%;border:6px solid var(--c);background:var(--sheet);color:var(--ink);font:800 13px/1 var(--display)}
+.line a:hover .n,.line .done .n{background:var(--c);color:var(--c-on)}
+.line .next .n{box-shadow:0 0 0 3px var(--sheet),0 0 0 6px var(--ink)}
+.line b{display:block;font:800 19px/1.3 var(--display)}
+.line a>span:last-child{color:var(--mute);font-size:15px}
+
+/* Classroom notes */
+.class{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:32px 72px}
+.class p{margin:0 0 16px;max-width:60ch}
+.lists{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 32px;align-content:start}
+.lists h3{font-size:19px;padding-bottom:10px;border-bottom:3px solid var(--ink)}
+.lists ul{margin:0;padding:0;list-style:none}
+.lists li{padding:8px 0 6px;border-bottom:1px solid var(--rule)}
+
+/* Closing band, on the main line */
+.finale{background:var(--l0);color:var(--l0-on)}
+.finale .wrap{display:flex;flex-wrap:wrap;gap:20px 40px;align-items:center;justify-content:space-between}
+.finale h2{font-size:clamp(34px,4.6vw,56px);font-weight:900;margin:0}
+.finale p{margin:10px 0 0;font-size:19px}
+.finale .btn{background:var(--l0-on);border-color:var(--l0-on);color:var(--l0)}
+.finale .btn:hover{background:transparent;color:var(--l0-on)}
+.finale .btn:focus-visible{outline-color:var(--l0-on)}
+
+@media(max-width:960px){.hero .top,.keysec,.route,.class{grid-template-columns:minmax(0,1fr)}.rintro{position:static}}
+@media(max-width:640px){.key{grid-template-columns:minmax(0,1fr);padding:4px 20px}.key>div:nth-child(2){border-top:1px solid var(--rule)}.lists{grid-template-columns:minmax(0,1fr)}.din{font-size:16px}.dgraph{height:300px}}
+.dout{white-space:pre-line}
+.dcmd{display:block;font:14px/1.5 var(--mono);color:var(--term-dim)}

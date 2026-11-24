@@ -1,0 +1,103 @@
+/* LearnGit shared styles: tokens, type, navigation, buttons, footer, graph figures.
+   IDEA a transit map. Branches are coloured lines, commits are stations, levels are a route.
+   COLOUR belongs to the lines: every coloured mark is a branch or a level group. The interface
+     itself is signage navy on map paper (light) or a night map (dark).
+   TYPE Overpass, descended from Highway Gothic road signage, with Overpass Mono for commands.
+   Themes: light-dark() follows the system; html[data-theme] pins a choice from the toggle. */
+:root{
+  color-scheme:light dark;
+  --paper:light-dark(#eef1f5,#0f1a2e);
+  --sheet:light-dark(#ffffff,#14223b);
+  --ink:light-dark(#14223b,#eaf0f8);
+  --ink-hover:light-dark(#2b4170,#ffffff);
+  --mute:light-dark(#56637a,#9aa9c2);
+  --rule:light-dark(#d3d9e3,#2a3b5c);
+  --tint:light-dark(#e2e7ee,#1b2b49);
+  --focus:light-dark(#1f5fd0,#7fb2ff);
+  --ok:light-dark(#066b49,#3ccb8c);
+  /* Line colours, each with the text colour that reads on it (orange takes navy text, as on real transit bullets). */
+  --l0:light-dark(#1f5fd0,#5b9bff);--l0-on:light-dark(#ffffff,#0f1a2e);
+  --l1:light-dark(#e07000,#ff9a3c);--l1-on:light-dark(#14223b,#0f1a2e);
+  --l2:light-dark(#087f56,#3ccb8c);--l2-on:light-dark(#ffffff,#0f1a2e);
+  --l3:light-dark(#c2187e,#ff6bb5);--l3-on:light-dark(#ffffff,#0f1a2e);
+  --l4:light-dark(#6a44c9,#a98bff);--l4-on:light-dark(#ffffff,#0f1a2e);
+  --l5:light-dark(#007c88,#35c6d4);--l5-on:light-dark(#ffffff,#0f1a2e);
+  /* Terminal: a navy sign panel in both themes. */
+  --term:light-dark(#14223b,#0a1322);
+  --term-rule:light-dark(#2b3f66,#1f2e4c);
+  --term-ink:#dde6f3;
+  --term-dim:#8d9cb6;
+  --term-prompt:#8bbcff;
+  --term-err:#ffa3a3;
+  --term-note:#a8e3c9;
+  --term-ok:#86e8b0;
+  --gut:max(4vw,16px);
+  --display:"Overpass",system-ui,sans-serif;
+  --mono:"Overpass Mono",ui-monospace,monospace;
+}
+:root[data-theme=light]{color-scheme:light}
+:root[data-theme=dark]{color-scheme:dark}
+
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font:17px/1.6 var(--display);overflow-x:clip;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.02em;line-height:1.05;margin:0;text-wrap:balance}
+p{text-wrap:pretty}
+a{color:var(--ink);text-decoration-thickness:2px;text-underline-offset:3px;text-decoration-color:var(--focus)}
+a:hover{text-decoration-color:currentColor}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+code,.mono{font-family:var(--mono);font-size:.92em}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.wrap{max-width:1240px;margin:0 auto}
+.band{padding:clamp(40px,6vw,88px) var(--gut)}
+
+/* Line colour slots for groups and keys: .g0 … .g5, .gs for the sandbox. */
+.g0{--c:var(--l0);--c-on:var(--l0-on)}.g1{--c:var(--l1);--c-on:var(--l1-on)}.g2{--c:var(--l2);--c-on:var(--l2-on)}
+.g3{--c:var(--l3);--c-on:var(--l3-on)}.g4{--c:var(--l4);--c-on:var(--l4-on)}.g5{--c:var(--l5);--c-on:var(--l5-on)}
+.gs{--c:var(--ink);--c-on:var(--paper)}
+
+/* Navigation */
+.nav{display:flex;align-items:center;flex-wrap:wrap;gap:4px 22px;padding:12px var(--gut);border-bottom:1px solid var(--rule)}
+.brand{display:flex;align-items:center;gap:10px;margin-right:auto;font:900 21px/1 var(--display);letter-spacing:-.02em;color:var(--ink);text-decoration:none;min-height:44px}
+.brand img{width:32px;height:32px}
+.nav a.l{color:var(--ink);text-decoration:none;font-weight:600;padding:10px 0 7px;border-bottom:3px solid transparent}
+.nav a.l:hover{border-bottom-color:var(--rule)}
+.nav a.l[aria-current=page]{border-bottom-color:var(--ink)}
+.theme{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;border:2px solid var(--rule);background:transparent;color:var(--ink);cursor:pointer;padding:0}
+.theme:hover{border-color:var(--ink)}
+.theme svg{width:20px;height:20px}
+.theme .sun,.theme[aria-pressed=true] .moon{display:none}
+.theme[aria-pressed=true] .sun{display:block}
+
+/* Buttons: navy sign panels. Colour stays with the lines. */
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:3px 24px 0;border-radius:24px;background:var(--ink);border:2px solid var(--ink);color:var(--paper);font:700 16px/1 var(--display);text-decoration:none;white-space:nowrap;cursor:pointer}
+.btn:hover{background:var(--ink-hover);border-color:var(--ink-hover)}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.ghost:hover{background:var(--tint);border-color:var(--ink)}
+.nav .btn{min-height:44px;padding:3px 20px 0}
+
+/* Graph figures */
+.fig{position:relative;height:var(--h,320px)}
+.fig>svg{position:absolute;inset:0;width:100%;height:100%}
+svg text{font-family:var(--display)}
+svg text.m{paint-order:stroke;stroke:var(--sheet);stroke-width:4px;fill:var(--mute)}
+.pop{animation:pop .4s cubic-bezier(.3,1.4,.6,1) backwards;transform-box:fill-box;transform-origin:center}
+@keyframes pop{from{transform:scale(.3);opacity:0}}
+@media(prefers-reduced-motion:reduce){.pop{animation:none}}
+
+/* Map key symbols (landing page, trainer, cheat sheet) */
+.sym{flex:none;width:52px;height:28px;overflow:visible}
+.sym text{font-size:11px;font-weight:700}
+
+footer.site{border-top:1px solid var(--rule);padding:28px var(--gut);color:var(--mute);font-size:15px}
+footer.site .wrap{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:center}
+footer.site .brand{font-size:18px;margin-right:auto}
+footer.site .brand img{width:26px;height:26px}
+footer.site a:not(.brand){color:var(--mute)}
+
+@media(max-width:620px){.nav{gap:0 16px}.nav .btn{display:none}.nav a.l{font-size:16px}}
+
+/* Branch, remote-tracking and tag labels in HTML, matching the ones drawn in the graph */
+.pill{display:inline-flex;align-items:center;height:24px;padding:3px 11px 0;border-radius:12px;background:var(--l0);color:var(--l0-on);font:700 13px/1 var(--display);white-space:nowrap}
+.pill.remote{background:var(--sheet);color:var(--ink);border:2px dashed var(--l0);padding:2px 9px 0}
+.pill.tag{background:radial-gradient(circle at 10px 50%,var(--sheet) 2.5px,transparent 3px),var(--ink);color:var(--sheet);border-radius:4px;padding-left:19px;clip-path:polygon(10px 0,100% 0,100% 100%,10px 100%,0 50%)}
