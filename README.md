@@ -59,14 +59,6 @@ Add an entry to `LEVELS` in `src/levels.ts`:
 
 Setup commands can include `teammate` to put a commit on origin that the student has not fetched yet. Add new levels at the end, so existing `#level-N` links and saved progress keep pointing at the same level. Then add its solution to `scripts/check-levels.ts` and run `npm test`.
 
-## Deploy to Vercel
-
-1. Push this folder to a GitHub repository.
-2. In Vercel: **Add New → Project**, import the repo. Vercel detects Vite automatically (build `npm run build`, output `dist`).
-3. Deploy.
-
-`vercel.json` enables clean URLs (`/learn` instead of `/learn.html`). The `dist/` folder also works on GitHub Pages or any static host.
-
 ## Limits
 
 The simulator tracks commits, branches, tags and one simulated remote (`origin`), with the `teammate` command standing in for other people's pushes. It has no file contents, so there is no staging, stash or merge conflicts; `git add`, `stash`, `diff` and `restore` explain this instead of failing. Interactive rebase is not simulated.

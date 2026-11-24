@@ -86,3 +86,18 @@ kbd{display:inline-block;font:600 13px/1.4 var(--mono);border:1px solid var(--ru
 
 @media(max-width:980px){.trainer{grid-template-columns:minmax(0,1fr)}.board{position:static}.gw{height:360px}.refhead{grid-template-columns:minmax(0,1fr)}.qref{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.route{flex-wrap:wrap;padding-bottom:12px}.stops{flex-basis:100%}.qref{grid-template-columns:minmax(0,1fr)}.lesson{padding:18px}.bullet{width:46px;height:46px;font-size:20px}.gw{height:320px}.term{height:320px}}
+
+/* Motion that answers the student: finishing a goal fills its station with a bump, flashes the
+   goal box and nudges Next level once; the hint slides in when asked for; the "you are here"
+   ring glides between stations. Each plays once, at the moment it happens. */
+.stop button{transition:background-color .25s,color .25s,box-shadow .3s}
+.stop.just-done button{animation:stop-done .7s cubic-bezier(.3,1.5,.5,1)}
+@keyframes stop-done{40%{transform:scale(1.3)}}
+.goal.celebrate{animation:goal-met 1s ease-out}
+@keyframes goal-met{from{background:color-mix(in srgb,var(--ok) 28%,var(--paper))}}
+.goal.celebrate .st,.hint.reveal{animation:rise .35s cubic-bezier(.3,1.4,.6,1) backwards}
+.goal.celebrate .st{animation-delay:.1s}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}}
+.goal.celebrate~.row #nb{animation:nudge .6s .35s ease-in-out}
+@keyframes nudge{50%{transform:scale(1.07)}}
+@media(prefers-reduced-motion:reduce){.stop button{transition:none}.stop.just-done button,.goal.celebrate,.goal.celebrate .st,.hint.reveal,.goal.celebrate~.row #nb{animation:none}}

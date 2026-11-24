@@ -80,3 +80,5 @@
 @media(max-width:640px){.key{grid-template-columns:minmax(0,1fr);padding:4px 20px}.key>div:nth-child(2){border-top:1px solid var(--rule)}.lists{grid-template-columns:minmax(0,1fr)}.din{font-size:16px}.dgraph{height:300px}}
 .dout{white-space:pre-line}
 .dcmd{display:block;font:14px/1.5 var(--mono);color:var(--term-dim)}
+.line .n{transition:background-color .2s,color .2s}
+@media(prefers-reduced-motion:reduce){.line .n{transition:none}}

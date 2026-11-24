@@ -1,7 +1,7 @@
 // Trainer page: route of levels, lesson, terminal and live commit graph.
 import './styles.css';
 import './trainer.css';
-import { drawRepo } from './graph/live';
+import { drawRepo, type DrawOptions } from './graph/live';
 import { esc } from './graph/render';
 import { GOAL_COUNT, GROUPS, LEVELS, SANDBOX_INDEX } from './levels';
 import { hashFor, nextLevel, readProgress, saveProgress } from './progress';
@@ -28,6 +28,9 @@ const repo = new Repo();
 let level = 0;
 let solved = false;
 let showHint = false;
+/** One-shot flags so a re-render plays its animation only at the moment it happens. */
+let celebrate = false;
+let revealHint = false;
 let done = new Set<number>();
 let seen = new Set<string>();
 const commandHistory: string[] = [];
@@ -94,9 +97,11 @@ function renderLesson(): void {
   ].join('');
   lesson.innerHTML = `<div class="lhead"><span class="bullet" aria-hidden="true">${sandbox ? 'S' : level + 1}</span><div><p class="where">${where}</p><h1>${esc(l.title)}</h1></div></div>
 <p class="story">${esc(l.story)}</p>
-<div class="goal${solved ? ' met' : ''}"><h2>${sandbox ? 'Free play' : 'Goal'}</h2><p>${esc(l.goal)}</p>${sandbox ? '' : `<p class="st">${solved ? 'Done. Nice work.' : 'Not done yet'}</p>`}</div>
+<div class="goal${solved ? ' met' : ''}${celebrate ? ' celebrate' : ''}"><h2>${sandbox ? 'Free play' : 'Goal'}</h2><p>${esc(l.goal)}</p>${sandbox ? '' : `<p class="st">${solved ? 'Done. Nice work.' : 'Not done yet'}</p>`}</div>
 <div class="row">${buttons}</div>
-${showHint && l.hint ? `<p class="hint"><span class="sr">Hint: </span>${esc(l.hint)}</p>` : ''}`;
+${showHint && l.hint ? `<p class="hint${revealHint ? ' reveal' : ''}"><span class="sr">Hint: </span>${esc(l.hint)}</p>` : ''}`;
+  celebrate = false;
+  revealHint = false;
 }
 
 function renderOrigin(): void {
@@ -116,12 +121,12 @@ function describeGraph(): void {
   svg.setAttribute('aria-label', `Commit graph. HEAD is ${where}. Branches: ${branches}.`);
 }
 
-function refresh(): void {
+function refresh(draw: DrawOptions = {}): void {
   updateLevels();
   renderLesson();
   renderOrigin();
   el('#pr').textContent = `(${repo.currentBranch ?? `HEAD ${repo.headId}`}) $`;
-  drawRepo(graphWrap, svg, repo, seen);
+  drawRepo(graphWrap, svg, repo, seen, draw);
   describeGraph();
 }
 
@@ -134,7 +139,8 @@ function load(i: number): void {
   out.innerHTML = '';
   print([{ text: 'Type help to list commands. Up arrow recalls earlier ones.', kind: 'note' }]);
   saveProgress(done, level);
-  refresh();
+  // The level's starting history builds up commit by commit.
+  refresh({ stagger: 55 });
   window.history.replaceState(null, '', hashFor(level));
   levelNav.querySelector(`[data-i="${level}"]`)?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
 }
@@ -143,8 +149,12 @@ function checkGoal(): void {
   const l = LEVELS[level];
   if (!l.check || solved || !l.check(repo)) return;
   solved = true;
+  celebrate = true;
   done.add(level);
   saveProgress(done, level);
+  const stop = levelNav.querySelector(`[data-i="${level}"]`)?.parentElement;
+  stop?.classList.add('just-done');
+  stop?.addEventListener('animationend', () => stop.classList.remove('just-done'), { once: true });
   const last = level === GOAL_COUNT - 1;
   print([
     {
@@ -162,7 +172,7 @@ function run(command: string): void {
   }
   print(repo.exec(command));
   checkGoal();
-  refresh();
+  refresh({ motion: true });
 }
 
 // ---- events ------------------------------------------------------------------------
@@ -197,6 +207,7 @@ lesson.addEventListener('click', (ev) => {
   const id = (ev.target as HTMLElement).closest('button')?.id;
   if (id === 'hb') {
     showHint = !showHint;
+    revealHint = showHint;
     renderLesson();
     document.getElementById('hb')?.focus();
   } else if (id === 'ub') {
@@ -221,8 +232,15 @@ window.addEventListener('hashchange', () => {
   if (i !== null && i !== level) load(i);
 });
 
-const resizeObserver = new ResizeObserver(() => requestAnimationFrame(() => drawRepo(graphWrap, svg, repo, seen)));
-resizeObserver.observe(graphWrap);
+// Redraw to fit when the graph area really changes size (not on the observer's first call, which
+// would cut short the opening animation).
+const sizeOf = () => `${graphWrap.clientWidth}x${graphWrap.clientHeight}`;
+let drawnSize = sizeOf();
+new ResizeObserver(() => {
+  if (sizeOf() === drawnSize) return;
+  drawnSize = sizeOf();
+  requestAnimationFrame(() => drawRepo(graphWrap, svg, repo, seen));
+}).observe(graphWrap);
 
 // ---- start: link > saved level > first unfinished level ----------------------------
 

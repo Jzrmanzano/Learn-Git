@@ -82,7 +82,7 @@ function draw(svg: SVGSVGElement, g: StaticGraph, first: boolean): void {
       at: nodes.get(at)!,
       items: g.branches
         .filter((b) => b.at === at)
-        .map((b) => ({ text: b.current ? `HEAD → ${b.name}` : b.name, kind: b.kind ?? 'branch', line: b.colour })),
+        .map((b) => ({ key: `${b.kind ?? 'branch'}:${b.name}`, text: b.current ? `HEAD → ${b.name}` : b.name, kind: b.kind ?? 'branch', line: b.colour })),
     })),
   });
 }

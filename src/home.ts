@@ -1,7 +1,7 @@
 // Landing page: the live demo repository in the hero, and progress marks on the route of levels.
 import './styles.css';
 import './home.css';
-import { drawRepo } from './graph/live';
+import { drawRepo, type DrawOptions } from './graph/live';
 import { LEVELS } from './levels';
 import { hashFor, nextLevel, readProgress } from './progress';
 import { Repo, type Line } from './sim';
@@ -41,11 +41,13 @@ if (graph && svg && form && input && prompt && out && tryRow) {
   const repo = new Repo();
   repo.load(DEMO_SETUP);
   const seen = new Set<string>();
-  let first = true;
+  let drawnSize = '';
 
-  const draw = () => {
-    drawRepo(graph, svg, repo, seen, { stagger: first });
-    first = false;
+  // The page's one orchestrated moment: on first draw the demo's history builds up along its lines.
+  // After that, commands animate what changed, and resizes just refit.
+  const draw = (o: DrawOptions = {}) => {
+    drawnSize = `${graph.clientWidth}x${graph.clientHeight}`;
+    drawRepo(graph, svg, repo, seen, o);
     prompt.textContent = `(${repo.currentBranch ?? `HEAD ${repo.headId}`}) $`;
   };
 
@@ -69,7 +71,7 @@ if (graph && svg && form && input && prompt && out && tryRow) {
   const run = (command: string) => {
     if (command === 'clear') return out.replaceChildren();
     show(command, repo.exec(command));
-    draw();
+    draw({ motion: true });
   };
 
   form.addEventListener('submit', (ev) => {
@@ -83,7 +85,12 @@ if (graph && svg && form && input && prompt && out && tryRow) {
     if (b?.textContent) run(b.textContent);
   });
 
-  new ResizeObserver(() => requestAnimationFrame(draw)).observe(graph);
+  let first = true;
+  new ResizeObserver(() => {
+    if (!first && `${graph.clientWidth}x${graph.clientHeight}` === drawnSize) return;
+    requestAnimationFrame(() => draw(first ? { stagger: 90 } : {}));
+    first = false;
+  }).observe(graph);
 }
 
 // ---- progress on the route ------------------------------------------------------

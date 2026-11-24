@@ -32,12 +32,17 @@ export function initTheme(): void {
   document.addEventListener('click', (ev) => {
     if (!(ev.target as Element).closest('[data-theme-toggle]')) return;
     const next: Theme = current() === 'dark' ? 'light' : 'dark';
-    root.dataset.theme = next;
-    try {
-      localStorage.setItem(KEY, next);
-    } catch {
-      /* storage unavailable: the choice lasts for this page only */
-    }
-    sync();
+    const apply = () => {
+      root.dataset.theme = next;
+      try {
+        localStorage.setItem(KEY, next);
+      } catch {
+        /* storage unavailable: the choice lasts for this page only */
+      }
+      sync();
+    };
+    // Crossfade between themes where the browser supports view transitions.
+    if (document.startViewTransition && !matchMedia('(prefers-reduced-motion: reduce)').matches) document.startViewTransition(apply);
+    else apply();
   });
 }
